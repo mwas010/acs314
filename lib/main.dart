@@ -1,11 +1,6 @@
 import 'package:flutter/material.dart';
 
 void main() {
-  var text = Text(
-    "Enter password",
-    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
-  );
-
   runApp(
     MaterialApp(
       debugShowCheckedModeBanner: false,
@@ -29,7 +24,7 @@ void main() {
             children: [
               Center(
                 child: Image.asset(
-                  "assets/images/images.jpeg",
+                  "assets/images.jpeg",
                   height: 200,
                   width: 200,
                 ),
@@ -52,12 +47,13 @@ void main() {
               SizedBox(height: 30),
               Padding(
                 padding: const EdgeInsets.fromLTRB(10, 0, 0, 0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [text],
-                ),
+                child: Row(mainAxisAlignment: MainAxisAlignment.start),
               ),
               SizedBox(height: 10),
+              Text(
+                "Enter Password",
+                style: TextStyle(fontSize: 17, fontWeight: FontWeight.w700),
+              ),
               TextField(
                 obscureText: true,
                 decoration: InputDecoration(
