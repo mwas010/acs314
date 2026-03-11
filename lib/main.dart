@@ -1,102 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:flutter_application_1/views/login.dart';
+import 'package:flutter_application_1/views/signup.dart';
+import 'package:flutter_application_1/configs/colors.dart';
+import 'package:flutter_application_1/views/homescreen.dart';
 
 void main() {
   runApp(
-    MaterialApp(
+    GetMaterialApp(
+      initialRoute: "/",
+      getPages: [
+        GetPage(name: "/", page: () => LoginScreen()),
+        GetPage(name: "/signup", page: () => SignupScreen()),
+        GetPage(name: "/homescreen", page: () => HomeScreen()),
+      ],
       debugShowCheckedModeBanner: false,
-      home: Scaffold(
-        // appBar: AppBar(
-        //   backgroundColor: Colors.white,
-        //   title: Text(
-        //     "Login Screen",
-        //     style: TextStyle(
-        //       color: Colors.blue,
-        //       fontSize: 24,
-        //       fontWeight: FontWeight.bold,
-        //     ),
-        //   ),
-        //   centerTitle: true,
-        // ),
-        body: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Center(
-                child: Image.asset(
-                  "assets/images.jpeg",
-                  height: 200,
-                  width: 200,
-                ),
-              ),
-              SizedBox(height: 20),
-              Text(
-                "Enter username",
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
-                textAlign: TextAlign.end,
-              ),
-              TextField(
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  hintText: "Use email or phone number",
-                  prefixIcon: Icon(Icons.person),
-                ),
-              ),
-              SizedBox(height: 30),
-              Padding(
-                padding: const EdgeInsets.fromLTRB(10, 0, 0, 0),
-                child: Row(mainAxisAlignment: MainAxisAlignment.start),
-              ),
-              SizedBox(height: 10),
-              Text(
-                "Enter Password",
-                style: TextStyle(fontSize: 17, fontWeight: FontWeight.w700),
-              ),
-              TextField(
-                obscureText: true,
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  hintText: "Enter your password",
-                  prefixIcon: Icon(Icons.lock),
-                ),
-              ),
-              SizedBox(height: 30),
-
-              SizedBox(height: 20),
-              Container(
-                height: 50,
-                alignment: Alignment.center,
-                decoration: BoxDecoration(
-                  color: Colors.amber,
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                child: Text(
-                  "Login",
-                  style: TextStyle(color: Colors.white, fontSize: 16),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.fromLTRB(10, 5, 10, 10),
-                child: Row(
-                  children: [
-                    Text("Don't have an account?"),
-                    SizedBox(width: 5),
-                    Text("Sign up", style: TextStyle(color: Colors.amber)),
-                    Spacer(),
-                    Text("Forgot password?"),
-                    SizedBox(width: 5),
-                    Text("Reset", style: TextStyle(color: Colors.amber)),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    ),
+       home: LoginScreen()
+       ),
   );
 }
