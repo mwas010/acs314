@@ -180,7 +180,7 @@ class _SignupScreenState extends State<SignupScreen> {
                   print("Submit clicked");
                 },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.blue,
+                  backgroundColor: Colors.deepOrangeAccent,
                   foregroundColor: Colors.white,
                   minimumSize: Size(double.infinity, 50),
                   shape: RoundedRectangleBorder(
@@ -191,15 +191,21 @@ class _SignupScreenState extends State<SignupScreen> {
               ),
 
               SizedBox(height: 20),
-
-              GestureDetector(
-                onTap: () {
-                  Navigator.pushNamed(context, "/");
-                },
-                child: Text(
-                  "Already have an account? Log In",
-                  style: TextStyle(color: Colors.grey[600]),
-                ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text('Already have an account?'),
+                  
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.pushNamed(context, "/");
+                    },
+                    child: Text(
+                      " Log In",
+                      style: TextStyle(color: Colors.deepOrangeAccent),
+                    ),
+                  ),
+                ],
               ),
             ],
           ),

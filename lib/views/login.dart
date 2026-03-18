@@ -1,4 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/controllers/logincontroller.dart';
+import 'package:get/get_core/src/get_main.dart';
+import 'package:get/get_instance/get_instance.dart';
+import 'package:get/get_navigation/get_navigation.dart';
+import 'package:get/get_instance/src/extension_instance.dart';
+import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
+
+Logincontroller logincontroller = Get.put(Logincontroller());
+TextEditingController usernameController = TextEditingController();
+TextEditingController passwordController = TextEditingController();
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -20,7 +30,6 @@ class _LoginScreenState extends State<LoginScreen> {
       body: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Column(
-          
           children: [
             // Text(
             //   "Jumia Marketplace",
@@ -32,10 +41,9 @@ class _LoginScreenState extends State<LoginScreen> {
             // ),
             SizedBox(height: 40),
             Image.asset(
-              "assets/images.jpeg",
+              "assets/images.jpg",
               width: 200,
               alignment: Alignment.topCenter,
-
             ),
             SizedBox(height: 40.0),
 
@@ -54,6 +62,7 @@ class _LoginScreenState extends State<LoginScreen> {
             Padding(
               padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
               child: TextField(
+                controller: usernameController,
                 decoration: InputDecoration(
                   hintText: "Email or Phone Number",
                   border: OutlineInputBorder(
@@ -78,13 +87,28 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
             Padding(
               padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
-              child: TextField(
-                decoration: InputDecoration(
-                  hintText: "PIN or Password",
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(20),
+              child: Obx(
+                () => TextField(
+                  obscureText: !logincontroller.isPasswordVisible.value,
+                  controller: passwordController,
+                  decoration: InputDecoration(
+                    hintText: "PIN or Password",
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    prefixIcon: Icon(Icons.lock),
+                    suffixIcon: GestureDetector(
+                      child: Icon(
+                        logincontroller.isPasswordVisible.value
+                            ? Icons.visibility_off
+                            : Icons.visibility,
+                      ),
+
+                      onTap: () {
+                        logincontroller.togglePassword();
+                      },
+                    ),
                   ),
-                  prefixIcon: Icon(Icons.lock),
                 ),
               ),
             ),
@@ -97,11 +121,22 @@ class _LoginScreenState extends State<LoginScreen> {
             // ),
             GestureDetector(
               onTap: () {
-                  Navigator.pushNamed(context, "/homescreen");
-                  },
+                bool success = logincontroller.login(
+                  usernameController.text,
+                  passwordController.text,
+                );
+                if (success) {
+                  Get.offAndToNamed('/homescreen');
+                } else {
+                  Get.snackbar(
+                    'Login failed',
+                    'invalid username or password',
+                    snackPosition: SnackPosition.BOTTOM,
+                  );
+                }
+              },
 
-                // Handle login logic here
-              
+              // Handle login logic here
               child: Padding(
                 padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
                 child: Container(
@@ -109,7 +144,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   width: double.infinity,
                   alignment: Alignment.center,
                   decoration: BoxDecoration(
-                    color: Colors.blueAccent,
+                    color: Colors.deepOrangeAccent,
                     borderRadius: BorderRadius.circular(40),
                   ),
                   child: Text(
@@ -135,7 +170,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     style: TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.w700,
-                      color: Colors.blue,
+                      color: Colors.deepOrangeAccent,
                     ),
                   ),
                 ),
@@ -149,7 +184,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   style: TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.w700,
-                    color: Colors.blue,
+                    color: Colors.deepOrangeAccent,
                   ),
                 ),
               ],
