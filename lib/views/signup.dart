@@ -1,4 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/controllers/logincontroller.dart';
+import 'package:flutter_application_1/controllers/signupcontoller.dart';
+import 'package:get/get_core/src/get_main.dart';
+import 'package:get/get_instance/get_instance.dart';
+import 'package:get/get_navigation/get_navigation.dart';
+import 'package:get/get_instance/src/extension_instance.dart';
+import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
+
+Signupcontoller signupcontroller = Get.put(Signupcontoller());
+TextEditingController passwordController = TextEditingController();
+TextEditingController passwordController1 = TextEditingController();
 
 class SignupScreen extends StatefulWidget {
   const SignupScreen({super.key});
@@ -138,14 +149,27 @@ class _SignupScreenState extends State<SignupScreen> {
                 ),
               ),
               SizedBox(height: 8),
-              TextField(
-                obscureText: true,
-                decoration: InputDecoration(
-                  hintText: "........",
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
+              Obx(
+                () => TextField(
+                  obscureText: !signupcontroller.isPasswordVisible.value,
+                  controller: passwordController,
+                  decoration: InputDecoration(
+                    hintText: "........",
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    prefixIcon: Icon(Icons.lock),
+                    suffixIcon: GestureDetector(
+                      child: Icon(
+                        signupcontroller.isPasswordVisible.value
+                            ? Icons.visibility_off
+                            : Icons.visibility,
+                      ),
+                      onTap: () {
+                        signupcontroller.togglePassword();
+                      },
+                    ),
                   ),
-                  prefixIcon: Icon(Icons.lock),
                 ),
               ),
 
@@ -162,14 +186,28 @@ class _SignupScreenState extends State<SignupScreen> {
                 ),
               ),
               SizedBox(height: 8),
-              TextField(
-                obscureText: true,
-                decoration: InputDecoration(
-                  hintText: "........",
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
+              Obx(
+                () => TextField(
+                  obscureText: !signupcontroller.isPasswordVisible.value,
+                  controller: passwordController1,
+
+                  decoration: InputDecoration(
+                    hintText: "........",
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    prefixIcon: Icon(Icons.lock),
+                    suffixIcon: GestureDetector(
+                      child: Icon(
+                        signupcontroller.isPasswordVisible.value
+                            ? Icons.visibility_off
+                            : Icons.visibility,
+                      ),
+                      onTap: () {
+                        signupcontroller.togglePassword();
+                      },
+                    ),
                   ),
-                  prefixIcon: Icon(Icons.lock),
                 ),
               ),
               SizedBox(height: 30),
@@ -195,7 +233,7 @@ class _SignupScreenState extends State<SignupScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text('Already have an account?'),
-                  
+
                   GestureDetector(
                     onTap: () {
                       Navigator.pushNamed(context, "/");
