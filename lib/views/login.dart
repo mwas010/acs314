@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/controllers/logincontroller.dart';
 import 'package:get/get_core/src/get_main.dart';
@@ -5,6 +6,7 @@ import 'package:get/get_instance/get_instance.dart';
 import 'package:get/get_navigation/get_navigation.dart';
 import 'package:get/get_instance/src/extension_instance.dart';
 import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
+import 'package:http/http.dart' as http;
 
 Logincontroller logincontroller = Get.put(Logincontroller());
 TextEditingController usernameController = TextEditingController();
@@ -31,14 +33,6 @@ class _LoginScreenState extends State<LoginScreen> {
         padding: const EdgeInsets.all(8.0),
         child: Column(
           children: [
-            // Text(
-            //   "Jumia Marketplace",
-            //   style: TextStyle(
-            //     color: Colors.blue,
-            //     fontSize: 30,
-            //     fontWeight: FontWeight.w800,
-            //   ),
-            // ),
             SizedBox(height: 40),
             Image.asset(
               "assets/images.jpg",
@@ -113,26 +107,50 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
             ),
             SizedBox(height: 20),
-            // MaterialButton(
-            //   onPressed: () {},
-            //   child: Text("Login", style: TextStyle(color: Colors.white)),
-            //   color: Colors.deepOrangeAccent,
-
-            // ),
+           
             GestureDetector(
-              onTap: () {
-                bool success = logincontroller.login(
-                  usernameController.text,
-                  passwordController.text,
-                );
-                if (success) {
-                  Get.offAndToNamed('/homescreen');
-                } else {
+              onTap: () async {
+                if (usernameController.text.isEmpty) {
                   Get.snackbar(
-                    'Login failed',
-                    'invalid username or password',
+                    'Error',
+                    'Please enter your username',
                     snackPosition: SnackPosition.BOTTOM,
                   );
+                } else if (passwordController.text.isEmpty) {
+                  Get.snackbar(
+                    'Error',
+                    'Please enter your password',
+                    snackPosition: SnackPosition.BOTTOM,
+                  );
+                } else {
+                  final response = await http.get(
+                    Uri.parse(
+                      "http://localhost/acs314/login.php?email=${usernameController.text}&password=${passwordController.text}",
+                    ),
+                  );
+                  if (response.statusCode == 200) {
+                    final serverData = jsonDecode(response.body);
+                    if (serverData['message'] == 'Login successful') {
+                      Get.snackbar(
+                        'Success',
+                        'Login successful',
+                        snackPosition: SnackPosition.BOTTOM,
+                      );
+                      Get.offNamed("/homescreen");
+                    } else {
+                      Get.snackbar(
+                        'Authentication Failed',
+                        serverData["message"],
+                        snackPosition: SnackPosition.BOTTOM,
+                      );
+                    }
+                  } else {
+                    Get.snackbar(
+                      'Server Error',
+                      'Server failed. Please try again.',
+                      snackPosition: SnackPosition.BOTTOM,
+                    );
+                  }
                 }
               },
 

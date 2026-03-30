@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter_application_1/configs/colors.dart';
-import 'package:get/get_navigation/src/extension_navigation.dart';
 
 class Pizza {
   final String name;

@@ -5,17 +5,7 @@ class Logincontroller extends GetxController {
   var password;
   var isPasswordVisible = false.obs;
 
-  login(user, pass) {
-    username = user;
-    password = pass;
-    if (username == 'admin' && password == "12345") {
-      return true;
-    } else {
-      return false;
-    }
-  
-    }
-      togglePassword() {
+  togglePassword() {
     isPasswordVisible.value = !isPasswordVisible.value;
   }
 }

@@ -1,15 +1,23 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/controllers/logincontroller.dart';
 import 'package:flutter_application_1/controllers/signupcontoller.dart';
+import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_instance/get_instance.dart';
 import 'package:get/get_navigation/get_navigation.dart';
 import 'package:get/get_instance/src/extension_instance.dart';
 import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
+import 'package:http/http.dart' as http;
 
 Signupcontoller signupcontroller = Get.put(Signupcontoller());
 TextEditingController passwordController = TextEditingController();
 TextEditingController passwordController1 = TextEditingController();
+TextEditingController phonenumberController = TextEditingController();
+TextEditingController emailController = TextEditingController();
+TextEditingController firstnameController = TextEditingController();
+TextEditingController secondnameController = TextEditingController();
 
 class SignupScreen extends StatefulWidget {
   const SignupScreen({super.key});
@@ -74,6 +82,7 @@ class _SignupScreenState extends State<SignupScreen> {
               ),
               SizedBox(height: 8),
               TextField(
+                controller: firstnameController,
                 decoration: InputDecoration(
                   hintText: "John", // Changed from labelText to hintText
                   border: OutlineInputBorder(
@@ -99,8 +108,34 @@ class _SignupScreenState extends State<SignupScreen> {
               ),
               SizedBox(height: 8),
               TextField(
+                controller: secondnameController,
                 decoration: InputDecoration(
                   hintText: "Doe",
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  prefixIcon: Icon(Icons.person),
+                ),
+              ),
+
+              SizedBox(height: 20),
+
+              Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  "Enter your phone number",
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: Colors.grey[700],
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+              ),
+              SizedBox(height: 8),
+              TextField(
+                controller: phonenumberController,
+                decoration: InputDecoration(
+                  hintText: "07........",
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
                   ),
@@ -124,6 +159,7 @@ class _SignupScreenState extends State<SignupScreen> {
               ),
               SizedBox(height: 8),
               TextField(
+                controller: emailController,
                 keyboardType: TextInputType.emailAddress,
                 decoration: InputDecoration(
                   hintText: "johndoe@gmail.com",
@@ -149,6 +185,7 @@ class _SignupScreenState extends State<SignupScreen> {
                 ),
               ),
               SizedBox(height: 8),
+
               Obx(
                 () => TextField(
                   obscureText: !signupcontroller.isPasswordVisible.value,
@@ -188,7 +225,7 @@ class _SignupScreenState extends State<SignupScreen> {
               SizedBox(height: 8),
               Obx(
                 () => TextField(
-                  obscureText: !signupcontroller.isPasswordVisible.value,
+                  obscureText: !signupcontroller.isConfirmPasswordVisible.value,
                   controller: passwordController1,
 
                   decoration: InputDecoration(
@@ -199,12 +236,12 @@ class _SignupScreenState extends State<SignupScreen> {
                     prefixIcon: Icon(Icons.lock),
                     suffixIcon: GestureDetector(
                       child: Icon(
-                        signupcontroller.isPasswordVisible.value
+                        signupcontroller.isConfirmPasswordVisible.value
                             ? Icons.visibility_off
                             : Icons.visibility,
                       ),
                       onTap: () {
-                        signupcontroller.togglePassword();
+                        signupcontroller.toggleConfirmPassword();
                       },
                     ),
                   ),
@@ -214,8 +251,90 @@ class _SignupScreenState extends State<SignupScreen> {
 
               // Submit Button
               ElevatedButton(
-                onPressed: () {
-                  print("Submit clicked");
+                onPressed: () async {
+                  if (firstnameController.text.isEmpty) {
+                    Get.snackbar(
+                      "Error",
+                      "First name is required",
+                      backgroundColor: Colors.redAccent,
+                      colorText: Colors.white,
+                    );
+                    return;
+                  } else if (secondnameController.text.isEmpty) {
+                    Get.snackbar(
+                      "Error",
+                      "Second name is required",
+                      backgroundColor: Colors.redAccent,
+                      colorText: Colors.white,
+                    );
+                    return;
+                  } else if (phonenumberController.text.isEmpty) {
+                    Get.snackbar(
+                      "Error",
+                      "Phone number is required",
+                      backgroundColor: Colors.redAccent,
+                      colorText: Colors.white,
+                    );
+                    return;
+                  } else if (emailController.text.isEmpty) {
+                    Get.snackbar(
+                      "Error",
+                      "Email is required",
+                      backgroundColor: Colors.redAccent,
+                      colorText: Colors.white,
+                    );
+                    return;
+                  } else if (passwordController.text.isEmpty) {
+                    Get.snackbar(
+                      "Error",
+                      "Password is required",
+                      backgroundColor: Colors.redAccent,
+                      colorText: Colors.white,
+                    );
+                    return;
+                  } else if (passwordController1.text.isEmpty) {
+                    Get.snackbar(
+                      "Error",
+                      "Confirm password is required",
+                      backgroundColor: Colors.redAccent,
+                      colorText: Colors.white,
+                    );
+                    return;
+                  } else if (passwordController.text !=
+                      passwordController1.text) {
+                    Get.snackbar(
+                      "Error",
+                      "Passwords do not match",
+                      backgroundColor: Colors.redAccent,
+                      colorText: Colors.white,
+                    );
+                    return;
+                  } else {
+                    final response = await http.get(
+                      Uri.parse(
+                        "http://localhost/acs314/add_users.php?firstname=${firstnameController.text}&secondname=${secondnameController.text}&phonenumber=${phonenumberController.text}&email=${emailController.text}&password=${passwordController.text}",
+                      ),
+                    );
+                    if (response.statusCode == 200) {
+                      final serverData = jsonDecode(response.body);
+                      if (serverData["message"] == "User added successfully") {
+                        Get.snackbar(
+                          "Success",
+                          "Account created successfully",
+                          backgroundColor: Colors.green,
+                          colorText: Colors.white,
+                        );
+                        Navigator.pushNamed(context, "/");
+                      }
+                    } else {
+                      Get.snackbar(
+                        "Error",
+                        "Failed to create account",
+                        backgroundColor: Colors.redAccent,
+                        colorText: Colors.white,
+                      );
+                    }
+                  }
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.deepOrangeAccent,
